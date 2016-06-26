@@ -11,6 +11,15 @@
    :origin {:country (s/enum :FI :PO)
             :city s/Str}})
 
+
+(s/defschema ErrorMessage
+  {:name s/Str
+   (s/optional-key :description) s/Str
+   :size (s/enum :L :M :S)
+   :origin {:country (s/enum :FI :PO)
+            :city s/Str}})
+
+
 (defapi app
     {:swagger
      {:ui "/"
@@ -26,6 +35,8 @@
                   :return {:result Long}
                   :query-params [x :- Long, y :- Long]
                   :summary "adds two numbers together"
+                  :responses {403 {:schema ErrorMessage}
+                              404 {:schema ErrorMessage}}
                   (log/info "got request2")
 
                   (ok {:result (+ x y)}))

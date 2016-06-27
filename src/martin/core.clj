@@ -3,6 +3,7 @@
             [ring.util.http-response :refer :all]
             [clojure.tools.logging :as log]
             [schema.core :as s]
+            [ring.middleware.cors :refer [wrap-cors]]
             [ring.swagger.json-schema :as rjs]))
 
 (s/defschema Pizza
@@ -64,3 +65,7 @@
              (ANY "/*" {headers :headers}
                   (log/info headers)
                   (not-found  headers))))
+
+(def handler
+  (wrap-cors app :access-control-allow-origin [#".*"]
+             :access-control-allow-methods [:get :put :post :delete]))

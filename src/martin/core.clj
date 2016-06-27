@@ -2,7 +2,8 @@
   (:require [compojure.api.sweet :refer :all]
             [ring.util.http-response :refer :all]
             [clojure.tools.logging :as log]
-            [schema.core :as s]))
+            [schema.core :as s]
+            [ring.swagger.json-schema :as rjs]))
 
 (s/defschema Pizza
   {:name s/Str
@@ -11,6 +12,19 @@
    :origin {:country (s/enum :FI :PO)
             :city s/Str}})
 
+
+(s/defschema Required
+  (rjs/field
+    {(s/optional-key :name) s/Str
+     (s/optional-key :title) s/Str
+     :address (rjs/field
+                {:street (rjs/field s/Str {:description "description here"  :readOnly true})}
+                {:description "Streename"
+                 :example "Ankkalinna 1"})}
+    {:minProperties 1
+     :description "I'm required"
+     :example {:name "Iines"
+               :title "Ankka"}}))
 
 (s/defschema ErrorMessage
   {:name s/Str
@@ -35,7 +49,7 @@
                   :return {:result Long}
                   :query-params [x :- Long, y :- Long]
                   :summary "adds two numbers together"
-                  :responses {403 {:schema ErrorMessage}
+                  :responses {403 {:schema Required}
                               404 {:schema ErrorMessage}}
                   (log/info "got request2")
 

@@ -35,6 +35,9 @@
             :city s/Str}})
 
 
+(s/defschema Result
+  {:result (rjs/field s/Int {:description "description here"  :readOnly true})})
+
 (defapi app
     {:swagger
      {:ui "/"
@@ -47,7 +50,7 @@
              :tags ["api"]
 
              (GET "/plus" []
-                  :return {:result Long}
+                  :return Result
                   :query-params [x :- Long, y :- Long]
                   :summary "adds two numbers together"
                   :responses {403 {:schema Required}

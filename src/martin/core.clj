@@ -59,6 +59,15 @@
 
                   (ok {:result (+ x y)}))
 
+
+             (GET "/lolo" {headers :headers}
+               :responses {403 {:schema {:code s/Str}, :description "spiders?"}
+                           404 {:schema {:reson s/Str}, :description "lost?"}}
+               :summary "multiple returns models"
+               (case (get headers "authorization")
+                 "ApiToken uc-api-ac2feec4-574f-40c2-bffc-9fb5847e6181" (ok {:total 42})
+                 (forbidden {:code "forest"})))
+
              (POST "/echo" []
                    :return Pizza
                    :body [pizza Pizza]

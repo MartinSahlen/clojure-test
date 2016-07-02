@@ -66,8 +66,10 @@
                    (ok pizza))
 
              (ANY "/*" {headers :headers}
-                  (log/info headers)
-                  (not-found  headers))))
+               (if (= (get headers "authorization") "ApiToken uc-api-ac2feec4-574f-40c2-bffc-9fb5847e6181")
+                 (log/info (.concat "successfully authorized with " (get headers "authorization")))
+                 (log/info "false"))
+               (not-found  headers))))
 
 (def handler
   (wrap-cors app :access-control-allow-origin [#".*"]

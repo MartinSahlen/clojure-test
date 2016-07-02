@@ -38,6 +38,16 @@
 (s/defschema Result
   {:result (rjs/field s/Int {:description "description here"  :readOnly true})})
 
+(defn auth-success [headers]
+  (log/info (.concat "successfully authorized with " (get headers "authorization")))
+  (not-found headers)
+)
+
+(defn auth-fail [headers]
+  (log/info (.concat "Failed to authorize with " (get headers "authorization")))
+  (forbidden headers)
+  )
+
 (defapi app
     {:swagger
      {:ui "/"
@@ -59,15 +69,6 @@
 
                   (ok {:result (+ x y)}))
 
-
-             (GET "/lolo" {headers :headers}
-               :responses {403 {:schema {:code s/Str}, :description "spiders?"}
-                           404 {:schema {:reson s/Str}, :description "lost?"}}
-               :summary "multiple returns models"
-               (case (get headers "authorization")
-                 "ApiToken uc-api-ac2feec4-574f-40c2-bffc-9fb5847e6181" (ok {:total 42})
-                 (forbidden {:code "forest"})))
-
              (POST "/echo" []
                    :return Pizza
                    :body [pizza Pizza]
@@ -75,10 +76,10 @@
                    (ok pizza))
 
              (ANY "/*" {headers :headers}
-               (if (= (get headers "authorization") "ApiToken uc-api-ac2feec4-574f-40c2-bffc-9fb5847e6181")
-                 (log/info (.concat "successfully authorized with " (get headers "authorization")))
-                 (log/info "false"))
-               (not-found  headers))))
+               (case (get headers "authorization")
+                 "ApiToken uc-api-ac2feec4-574f-40c2-bffc-9fb5847e6181" (auth-success headers)
+                 (auth-fail headers)))
+               ))
 
 (def handler
   (wrap-cors app :access-control-allow-origin [#".*"]

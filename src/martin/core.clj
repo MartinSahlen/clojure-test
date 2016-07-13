@@ -41,12 +41,12 @@
   {:result (rjs/field s/Int {:description "description here"  :readOnly true})})
 
 (defn auth-success [headers]
-  (log/info (.concat "successfully authorized with " (get headers "authorization")))
+  (log/info (.concat "successfully authorized with " (get headers :authorization)))
   (not-found headers)
 )
 
 (defn auth-fail [headers]
-  (log/info (.concat "Failed to authorize with " (get headers "authorization")))
+  (log/info (.concat "Failed to authorize with " (get headers :authorization)))
   (forbidden headers)
   )
 
@@ -77,7 +77,8 @@
                    :summary "echoes a Pizza"
                    (ok pizza))
 
-             (GET "/metrics" [request]
+             (GET "/metrics" request
+               (log/info (get request :headers))
                (serve-metrics request)
                )
 

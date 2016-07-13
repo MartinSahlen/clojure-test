@@ -14,7 +14,7 @@
                                                     javax.jms/jms
                                                     com.sun.jdmk/jmxtools
                                                     com.sun.jmx/jmxri]]]
-  :ring {:handler martin.core/the-handler :port 8000}
+  :ring {:handler martin.core/main-handler :port 8000}
   :uberjar-name "server.jar"
   :profiles {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
                                   [ring/ring-devel "1.5.0"]]

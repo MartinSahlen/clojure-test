@@ -3,7 +3,7 @@
             [ring.util.http-response :refer :all]
             [clojure.tools.logging :as log]
             [schema.core :as s]
-            [metrics.ring.expose :refer [expose-metrics-as-json]]
+            [metrics.ring.expose :refer [serve-metrics]]
             [metrics.ring.instrument :refer [instrument]]
             [ring.middleware.cors :refer [wrap-cors]]
             [ring.swagger.json-schema :as rjs]))
@@ -77,6 +77,10 @@
                    :summary "echoes a Pizza"
                    (ok pizza))
 
+             (GET "/metrics" [request]
+               (serve-metrics request)
+               )
+
              (ANY "/*" {headers :headers}
                (case (get headers "authorization")
                  "ApiToken uc-api-ac2feec4-574f-40c2-bffc-9fb5847e6181" (auth-success headers)
@@ -87,6 +91,4 @@
   (wrap-cors app :access-control-allow-origin [#".*"]
              :access-control-allow-methods [:get :put :post :delete]))
 
-(def main-handler (expose-metrics-as-json handler "/admin/metrics"))
-
-(def the-handler (instrument main-handler))
+(def main-handler (instrument handler))

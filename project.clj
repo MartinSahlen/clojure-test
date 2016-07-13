@@ -8,11 +8,13 @@
                  [metosin/compojure-api "1.1.3"]
                  [org.slf4j/slf4j-log4j12 "1.7.21"]
                  [ring-cors "0.1.8"]
+                 [metrics-clojure "2.7.0"]
+                 [metrics-clojure-ring "2.7.0"]
                  [log4j/log4j "1.2.17" :exclusions [javax.mail/mail
                                                     javax.jms/jms
                                                     com.sun.jdmk/jmxtools
                                                     com.sun.jmx/jmxri]]]
-  :ring {:handler martin.core/handler :port 8000}
+  :ring {:handler martin.core/the-handler :port 8000}
   :uberjar-name "server.jar"
   :profiles {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
                                   [ring/ring-devel "1.5.0"]]

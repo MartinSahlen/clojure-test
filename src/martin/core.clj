@@ -3,6 +3,8 @@
             [ring.util.http-response :refer :all]
             [clojure.tools.logging :as log]
             [schema.core :as s]
+            [metrics.ring.expose :refer [expose-metrics-as-json]]
+            [metrics.ring.instrument :refer [instrument]]
             [ring.middleware.cors :refer [wrap-cors]]
             [ring.swagger.json-schema :as rjs]))
 
@@ -84,3 +86,7 @@
 (def handler
   (wrap-cors app :access-control-allow-origin [#".*"]
              :access-control-allow-methods [:get :put :post :delete]))
+
+(def main-handler (expose-metrics-as-json handler "/admin/metrics"))
+
+(def the-handler (instrument main-handler))

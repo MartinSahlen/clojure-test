@@ -78,6 +78,7 @@
                    (ok pizza))
 
              (GET "/metrics" request
+               :no-doc true
                (log/info (get request :headers))
                (serve-metrics request)
                )
